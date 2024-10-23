@@ -1,0 +1,60 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}Create User{% endblock %}
+
+{% block content %}
+
+<a href="{{ url_for('main.show_users') }}" class="home-button btn btn-secondary">Home</a> 
+
+<div class="center-form">
+    <div class="form-container">
+        <h2>Create User</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div id="flash-messages" role="alert">
+              <ul class="list-unstyled">
+                {% for category, message in messages %}
+                  <li class="alert alert-{{ category }}">{{ message }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('main.create_user') }}">
+            {{ form.hidden_tag() }}  
+
+            <div>
+                <label for="email">Email:</label>
+                {{ form.email(class="form-control", placeholder="Enter your email") }}
+                {% for error in form.email.errors %}
+                    <div class="error text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div>
+                <label for="username">Username:</label>
+                {{ form.username(class="form-control", placeholder="Enter your username") }}
+                {% for error in form.username.errors %}
+                    <div class="error text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                {{ form.password(class="form-control", placeholder="Enter your password") }}
+                {% for error in form.password.errors %}
+                    <div class="error text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div>
+                <label for="about_user">About:</label>
+                {{ form.about_user(class="form-control", placeholder="Mention About User") }}
+                {% for error in form.about_user.errors %}
+                    <div class="error text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}User Data{% endblock %}
+
+{% block content %}
+<header>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+</header>
+
+<div class="users-data-container center-form" style="background-color: transparent; max-width: 1600px; margin: auto; padding: 20px;">
+    <div class="form-container">
+        <h1>User Data</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div id="flash-message" role="alert">
+                    <div class="alert">
+                        {% set unique_categories = [] %}
+                        {% for category, message in messages %}
+                            {% if category not in unique_categories %}
+                                {% set unique_categories = unique_categories + [category] %}
+                                <strong>{{ category|capitalize }}:</strong> 
+                            {% endif %}
+                            {{ message }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if users %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>About User</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td> 
+                            <td>{{ user.email }}</td>      
+                            <td>{{ user.about_user or 'None' }}</td>  
+                            <td>
+                                {% if current_user.email == ADMIN_EMAIL %}
+                                    <span>Admin cannot delete user data</span>
+                                {% else %}
+                                    <!-- Show delete option only for non-admin users -->
+                                    <form action="{{ url_for('main.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+                                        {{ form.hidden_tag() }} 
+                                        <button type="submit" class="btn btn-danger">Delete User Data</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No data found!</p>
+        {% endif %}
+
+        <div class="user-actions">
+            <a href="{{ url_for('main.create_user') }}" class="btn btn-primary">Create User Data</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
